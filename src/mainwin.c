@@ -282,8 +282,26 @@ mainwin_create_pixmap(MainWin *mw) {
 }
 
 void
+mainwin_update_background_config(MainWin *mw) {
+	session_t *ps = mw->ps;
+	pictspec_t spec = ps->o.bg_spec;
+
+	spec.twidth = mw->width;
+	spec.theight = mw->height;
+
+	pictw_t *p = simg_load_s(ps, &spec);
+	if (!p)
+		return;
+
+	ps->o.background = simg_postprocess(ps, p, PICTPOSP_ORIG,
+			mw->width, mw->height, spec.alg, spec.valg, &spec.c);
+}
+
+void
 mainwin_update_background(MainWin *mw) {
 	session_t *ps = mw->ps;
+
+	mainwin_update_background_config(mw);
 
 	Pixmap root = wm_get_root_pmap(ps->dpy);
 	XRenderPictureAttributes pa;

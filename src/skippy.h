@@ -210,7 +210,7 @@ typedef struct {
 	pictspec_t fillSpec;
 	char *buttonImgs[NUM_BUTN];
 	pictw_t *background;
-
+	pictspec_t bg_spec;
 	bool xinerama_showAll;
 
 	char *normal_tint;
