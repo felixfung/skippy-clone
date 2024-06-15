@@ -100,6 +100,7 @@ void mainwin_destroy(MainWin *);
 void mainwin_map(MainWin *);
 void mainwin_unmap(MainWin *);
 int mainwin_handle(MainWin *, XEvent *);
+void mainwin_update_background_config(MainWin *mw);
 void mainwin_update_background(MainWin *mw);
 void mainwin_update(MainWin *mw);
 MainWin *mainwin_create_pixmap(MainWin *mw);

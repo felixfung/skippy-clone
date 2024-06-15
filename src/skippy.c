@@ -1980,32 +1980,16 @@ load_config_file(session_t *ps)
         const char *sspec = config_get(config, "display", "background", "#00000055");
 		if (!sspec || strlen(sspec) == 0)
 			sspec = "#00000055";
-        if (sspec && strlen(sspec)) {
-            char bg_spec[256] = "orig mid mid ";
-            strcat(bg_spec, sspec);
-            pictspec_t spec = PICTSPECT_INIT;
-            if (!parse_pictspec(ps, bg_spec, &spec))
-                return RET_BADARG;
-            int root_width = DisplayWidth(ps->dpy, ps->screen),
-                    root_height = DisplayHeight(ps->dpy, ps->screen);
-            if (!(spec.twidth || spec.theight)) {
-                spec.twidth = root_width;
-                spec.theight = root_height;
-            }
-            pictw_t *p = simg_load_s(ps, &spec);
-            if (!p)
-                exit(1);
-            if (p->width != root_width || p->height != root_height)
-                ps->o.background = simg_postprocess(ps, p, PICTPOSP_ORIG,
-                        root_width, root_height, spec.alg, spec.valg, &spec.c);
-            else
-                ps->o.background = p;
-            free_pictspec(ps, &spec);
-        }
-		else {
+		char bg_spec[256] = "orig mid mid ";
+		strcat(bg_spec, sspec);
+
+		pictspec_t spec = PICTSPECT_INIT;
+		if (!parse_pictspec(ps, bg_spec, &spec)) {
 			ps->o.background = None;
+			return RET_BADARG;
 		}
-    }
+		ps->o.bg_spec = spec;
+	}
 	{
 		char defaultstr[256] = "orig mid mid ";
 		const char* sspec = config_get(config, "display", "fillSpec", "#333333");
@@ -2179,6 +2163,7 @@ main_end:
 			free(ps->o.tooltip_textShadow);
 			free(ps->o.tooltip_font);
 			free_pictw(ps, &ps->o.background);
+			free_pictspec(ps, &ps->o.bg_spec);
 			free_pictw(ps, &ps->o.iconDefault);
 			free_pictspec(ps, &ps->o.iconFillSpec);
 			free_pictspec(ps, &ps->o.fillSpec);
