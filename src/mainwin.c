@@ -293,6 +293,7 @@ mainwin_update_background_config(MainWin *mw) {
 	if (!p)
 		return;
 
+	free_pictw(ps, &ps->o.background);
 	ps->o.background = simg_postprocess(ps, p, PICTPOSP_ORIG,
 			mw->width, mw->height, spec.alg, spec.valg, &spec.c);
 }
