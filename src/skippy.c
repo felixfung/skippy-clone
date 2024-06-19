@@ -1988,6 +1988,7 @@ load_config_file(session_t *ps)
 			ps->o.background = None;
 			return RET_BADARG;
 		}
+		free_pictspec(ps, &ps->o.bg_spec);
 		ps->o.bg_spec = spec;
 	}
 	{
