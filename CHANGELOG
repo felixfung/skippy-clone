@@ -1,5 +1,15 @@
 Skippy-XD changelog
 
+0.8.0 -- "Labyrinth" (19 June 2024) ~/felixfung
+ - Tooltip for all windows, and other tooltip improvements
+ - Background tinting
+ - Panel/docked windows display
+ - Optimized CPU cycles for paging
+ - Boxy expose layout remains the same when z-order changes
+ - Perfected mouse/keyboard actions
+ - Fix memory leaks
+ - Fix bugs on config reload
+
 0.7.2 -- "Candybar" (30 July 2023) ~/felixfung
  - True transparency (previous lazyTrans) support
  - Re-organize config file categorizations
