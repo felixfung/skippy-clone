@@ -1984,7 +1984,10 @@ load_config_file(session_t *ps)
 		strcat(bg_spec, sspec);
 
 		pictspec_t spec = PICTSPECT_INIT;
-		if (!parse_pictspec(ps, bg_spec, &spec)) {
+		if (strcmp("None", sspec) == 0) {
+			ps->o.background = None;
+		}
+		else if (!parse_pictspec(ps, bg_spec, &spec)) {
 			ps->o.background = None;
 			return RET_BADARG;
 		}
