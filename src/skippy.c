@@ -1280,13 +1280,13 @@ mainloop(session_t *ps, bool activate_on_start) {
 			else if (mw && PropertyNotify == ev.type) {
 				printfdf(false, "(): else if (ev.type == PropertyNotify) {");
 
-				if (!ps->o.background &&
+				/*if (!ps->o.background &&
 						(ESETROOT_PMAP_ID == ev.xproperty.atom
 						 || _XROOTPMAP_ID == ev.xproperty.atom)) {
 
 					mainwin_update_background(mw);
 					REDUCE(clientwin_render((ClientWin *)iter->data), mw->clientondesktop);
-				}
+				}*/
 			}
 			else if (mw && wid) {
 				bool processing = true;
