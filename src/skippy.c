@@ -778,6 +778,14 @@ init_paging_layout(MainWin *mw, enum layoutmode layout, Window leader)
 				cw->y += cw->mainwin->y;
 			}
 
+			XRenderComposite(mw->ps->dpy,
+					PictOpSrc, mw->ps->o.from,
+					None, mw->background,
+					mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
+					0, 0, mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
+					desktop_width * mw->multiplier,
+					desktop_height * mw->multiplier);
+
 			XCompositeRedirectWindow(mw->ps->dpy, cw->src.window,
 					CompositeRedirectAutomatic);
 			cw->redirected = true;

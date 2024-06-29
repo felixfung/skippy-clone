@@ -330,7 +330,9 @@ mainwin_update_background(MainWin *mw) {
 				PictOpOver, ps->o.background->pict,
 				None, mw->background, 0, 0, 0, 0, 0, 0, mw->width, mw->height);
 
-	XRenderFreePicture(ps->dpy, from);
+	if (ps->o.from)
+		XRenderFreePicture(ps->dpy, ps->o.from);
+	ps->o.from = from;
 	XSetWindowBackgroundPixmap(ps->dpy, mw->window, mw->bg_pixmap);
 	XClearWindow(ps->dpy, mw->window);
 }

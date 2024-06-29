@@ -211,6 +211,7 @@ typedef struct {
 	char *buttonImgs[NUM_BUTN];
 	pictw_t *background;
 	pictspec_t bg_spec;
+	Picture from;
 	bool xinerama_showAll;
 
 	char *normal_tint;
