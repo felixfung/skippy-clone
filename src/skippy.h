@@ -197,6 +197,7 @@ typedef struct {
 	bool pseudoTrans;
 	bool includeFrame;
 	char *pipePath;
+	bool preservePages;
 	bool movePointer;
 	bool allowUpscale;
 	bool switchShowAllDesktops;
@@ -211,6 +212,7 @@ typedef struct {
 	char *buttonImgs[NUM_BUTN];
 	pictw_t *background;
 	pictspec_t bg_spec;
+	Picture from;
 	bool xinerama_showAll;
 
 	char *normal_tint;
@@ -275,6 +277,7 @@ typedef struct {
 	.pseudoTrans = true, \
 	.includeFrame = false, \
 	.pipePath = NULL, \
+	.preservePages = true, \
 	.movePointer = false, \
 	.allowUpscale = true, \
 	.cornerRadius = 0, \

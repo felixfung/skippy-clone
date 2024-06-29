@@ -304,33 +304,35 @@ mainwin_update_background(MainWin *mw) {
 
 	mainwin_update_background_config(mw);
 
-	Pixmap root = wm_get_root_pmap(ps->dpy);
-	XRenderPictureAttributes pa;
-	
 	if(mw->bg_pixmap)
 		XFreePixmap(ps->dpy, mw->bg_pixmap);
+	mw->bg_pixmap = XCreatePixmap(ps->dpy, mw->window,
+			mw->width, mw->height, mw->depth);
+
+	XRenderPictureAttributes pa;
+	pa.repeat = True;
+
 	if(mw->background)
 		XRenderFreePicture(ps->dpy, mw->background);
+	mw->background = XRenderCreatePicture(ps->dpy,
+			mw->bg_pixmap, mw->format, CPRepeat, &pa);
 	
-	mw->bg_pixmap = XCreatePixmap(ps->dpy, mw->window, mw->width, mw->height, mw->depth);
-	pa.repeat = True;
-	mw->background = XRenderCreatePicture(ps->dpy, mw->bg_pixmap, mw->format, CPRepeat, &pa);
-	
-	if (ps->o.background) {
-		Picture from = XRenderCreatePicture(ps->dpy, root, XRenderFindVisualFormat(ps->dpy, DefaultVisual(ps->dpy, ps->screen)), 0, 0);
-		XRenderComposite(ps->dpy, PictOpSrc, from, None, mw->background, mw->x, mw->y, 0, 0, 0, 0, mw->width, mw->height);
-		XRenderComposite(ps->dpy, PictOpOver, ps->o.background->pict, None, mw->background, 0, 0, 0, 0, 0, 0, mw->width, mw->height);
-	}
-	else if (!root) {
-		static const XRenderColor black = { 0, 0, 0, 0xffff};
-		XRenderFillRectangle(ps->dpy, PictOpSrc, mw->background, &black, 0, 0, mw->width, mw->height);
-	}
-	else {
-		Picture from = XRenderCreatePicture(ps->dpy, root, XRenderFindVisualFormat(ps->dpy, DefaultVisual(ps->dpy, ps->screen)), 0, 0);
-		XRenderComposite(ps->dpy, PictOpSrc, from, None, mw->background, mw->x, mw->y, 0, 0, 0, 0, mw->width, mw->height);
-		XRenderFreePicture(ps->dpy, from);
-	}
-	
+	Pixmap root = wm_get_root_pmap(ps->dpy);
+	Picture from = XRenderCreatePicture(ps->dpy, root,
+			XRenderFindVisualFormat(ps->dpy,
+				DefaultVisual(ps->dpy, ps->screen)), 0, 0);
+	XRenderComposite(ps->dpy,
+			PictOpSrc, from,
+			None, mw->background, mw->x, mw->y, 0, 0, 0, 0, mw->width, mw->height);
+
+	if (ps->o.background)
+		XRenderComposite(ps->dpy,
+				PictOpOver, ps->o.background->pict,
+				None, mw->background, 0, 0, 0, 0, 0, 0, mw->width, mw->height);
+
+	if (ps->o.from)
+		XRenderFreePicture(ps->dpy, ps->o.from);
+	ps->o.from = from;
 	XSetWindowBackgroundPixmap(ps->dpy, mw->window, mw->bg_pixmap);
 	XClearWindow(ps->dpy, mw->window);
 }

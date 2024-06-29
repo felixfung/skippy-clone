@@ -1174,6 +1174,22 @@ mainloop(session_t *ps, bool activate_on_start) {
 					first_animating = false;
 				}
 
+				if (layout == LAYOUTMODE_PAGING && mw->ps->o.preservePages) {
+					foreach_dlist (mw->dminis) {
+						ClientWin *cw = (ClientWin *) iter->data;
+						XRenderComposite(mw->ps->dpy,
+								PictOpSrc, mw->ps->o.from,
+								None, mw->background,
+								mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
+								0, 0,
+								mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
+								cw->src.width * mw->multiplier,
+								cw->src.height * mw->multiplier);
+						XSetWindowBackgroundPixmap(ps->dpy, mw->window, mw->bg_pixmap);
+						XClearWindow(ps->dpy, mw->window);
+					}
+				}
+
 				anime(ps->mainwin, ps->mainwin->clients, 1);
 				animating = false;
 				last_rendered = time_in_millis();
@@ -1280,13 +1296,13 @@ mainloop(session_t *ps, bool activate_on_start) {
 			else if (mw && PropertyNotify == ev.type) {
 				printfdf(false, "(): else if (ev.type == PropertyNotify) {");
 
-				if (!ps->o.background &&
+				/*if (!ps->o.background &&
 						(ESETROOT_PMAP_ID == ev.xproperty.atom
 						 || _XROOTPMAP_ID == ev.xproperty.atom)) {
 
 					mainwin_update_background(mw);
 					REDUCE(clientwin_render((ClientWin *)iter->data), mw->clientondesktop);
-				}
+				}*/
 			}
 			else if (mw && wid) {
 				bool processing = true;
@@ -1984,13 +2000,17 @@ load_config_file(session_t *ps)
 		strcat(bg_spec, sspec);
 
 		pictspec_t spec = PICTSPECT_INIT;
-		if (!parse_pictspec(ps, bg_spec, &spec)) {
+		if (strcmp("None", sspec) == 0) {
+			ps->o.background = None;
+		}
+		else if (!parse_pictspec(ps, bg_spec, &spec)) {
 			ps->o.background = None;
 			return RET_BADARG;
 		}
 		free_pictspec(ps, &ps->o.bg_spec);
 		ps->o.bg_spec = spec;
 	}
+	config_get_bool_wrap(config, "display", "preservePages", &ps->o.preservePages);
 	{
 		char defaultstr[256] = "orig mid mid ";
 		const char* sspec = config_get(config, "display", "fillSpec", "#333333");
