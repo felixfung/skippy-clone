@@ -1174,7 +1174,7 @@ mainloop(session_t *ps, bool activate_on_start) {
 					first_animating = false;
 				}
 
-				if (ps->o.mode == PROGMODE_PAGING && mw->ps->o.preservePages) {
+				if (layout == LAYOUTMODE_PAGING && mw->ps->o.preservePages) {
 					foreach_dlist (mw->dminis) {
 						ClientWin *cw = (ClientWin *) iter->data;
 						XRenderComposite(mw->ps->dpy,
