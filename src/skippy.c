@@ -778,13 +778,15 @@ init_paging_layout(MainWin *mw, enum layoutmode layout, Window leader)
 				cw->y += cw->mainwin->y;
 			}
 
-			XRenderComposite(mw->ps->dpy,
-					PictOpSrc, mw->ps->o.from,
-					None, mw->background,
-					mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
-					0, 0, mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
-					desktop_width * mw->multiplier,
-					desktop_height * mw->multiplier);
+			if (mw->ps->o.preservePages) {
+				XRenderComposite(mw->ps->dpy,
+						PictOpSrc, mw->ps->o.from,
+						None, mw->background,
+						mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
+						0, 0, mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
+						desktop_width * mw->multiplier,
+						desktop_height * mw->multiplier);
+			}
 
 			XCompositeRedirectWindow(mw->ps->dpy, cw->src.window,
 					CompositeRedirectAutomatic);
@@ -2002,6 +2004,7 @@ load_config_file(session_t *ps)
 		free_pictspec(ps, &ps->o.bg_spec);
 		ps->o.bg_spec = spec;
 	}
+	config_get_bool_wrap(config, "display", "preservePages", &ps->o.preservePages);
 	{
 		char defaultstr[256] = "orig mid mid ";
 		const char* sspec = config_get(config, "display", "fillSpec", "#333333");

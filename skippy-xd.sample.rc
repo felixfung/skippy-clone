@@ -83,6 +83,10 @@ exposeShowAllDesktops = false
 #   background = None
 background = #00000055
 
+# During paging mode, preserve original desktop appearance
+# From the background being applied
+preservePages = true
+
 # Move the mouse cursor when skippy is activated
 movePointer = false
 

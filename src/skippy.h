@@ -197,6 +197,7 @@ typedef struct {
 	bool pseudoTrans;
 	bool includeFrame;
 	char *pipePath;
+	bool preservePages;
 	bool movePointer;
 	bool allowUpscale;
 	bool switchShowAllDesktops;
@@ -276,6 +277,7 @@ typedef struct {
 	.pseudoTrans = true, \
 	.includeFrame = false, \
 	.pipePath = NULL, \
+	.preservePages = true, \
 	.movePointer = false, \
 	.allowUpscale = true, \
 	.cornerRadius = 0, \
