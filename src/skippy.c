@@ -778,16 +778,6 @@ init_paging_layout(MainWin *mw, enum layoutmode layout, Window leader)
 				cw->y += cw->mainwin->y;
 			}
 
-			if (mw->ps->o.preservePages) {
-				XRenderComposite(mw->ps->dpy,
-						PictOpSrc, mw->ps->o.from,
-						None, mw->background,
-						mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
-						0, 0, mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
-						desktop_width * mw->multiplier,
-						desktop_height * mw->multiplier);
-			}
-
 			XCompositeRedirectWindow(mw->ps->dpy, cw->src.window,
 					CompositeRedirectAutomatic);
 			cw->redirected = true;
@@ -1182,6 +1172,22 @@ mainloop(session_t *ps, bool activate_on_start) {
 					}
 
 					first_animating = false;
+				}
+
+				if (ps->o.mode == PROGMODE_PAGING && mw->ps->o.preservePages) {
+					foreach_dlist (mw->dminis) {
+						ClientWin *cw = (ClientWin *) iter->data;
+						XRenderComposite(mw->ps->dpy,
+								PictOpSrc, mw->ps->o.from,
+								None, mw->background,
+								mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
+								0, 0,
+								mw->x + cw->x + mw->xoff, mw->y + cw->y + mw->yoff,
+								cw->src.width * mw->multiplier,
+								cw->src.height * mw->multiplier);
+						XSetWindowBackgroundPixmap(ps->dpy, mw->window, mw->bg_pixmap);
+						XClearWindow(ps->dpy, mw->window);
+					}
 				}
 
 				anime(ps->mainwin, ps->mainwin->clients, 1);
