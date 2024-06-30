@@ -380,9 +380,11 @@ clientwin_repaint(ClientWin *cw, const XRectangle *pbound)
 		case CLIDISP_NONE:
 			break;
 		case CLIDISP_FILLED:
+			if (!cw->pict_filled) return;
 			source = cw->pict_filled->pict;
 			break;
 		case CLIDISP_ICON:
+			if (!cw->icon_pict_filled) return;
 			source = cw->icon_pict_filled->pict;
 			break;
 		case CLIDISP_ZOMBIE:
